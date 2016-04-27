@@ -4,15 +4,11 @@ block page_main
 	section.index
 		div.index__hd
 		div.index__bd
-			div#animate-canvas.animate-canvas
-				- for (var x = 0; x < 32; x++)
-					div.animate-canvas__item.js-item
-						div.box
-
-			div.index__content
-				div.l-container
-					div.l-vm
-						div.l-vm__content
-							p 灰色區塊內垂直置中	
+			div.demo
+				div.demo__ctrl.demo__ctrl--next Next
+				div.demo__ctrl.demo__ctrl--skip skip
+				div.demo__load
+				div.demo__area
+					//- img.demo-img(src="/images/demo2.jpg", alt="")
 		div.index__ft
 

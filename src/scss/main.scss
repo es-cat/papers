@@ -38,3 +38,89 @@ $boxShadow: 0px 3px 7px 0px rgba(0, 0, 0, 0.1);
 }
 
 
+
+$itemWidth: 100;
+$itemHeight: 80;
+$xCount: 15;
+$yCount: 10;
+
+.demo {
+	position: absolute;
+	top:0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+
+.demo__area {
+	@extend .clearfix;
+	background: #000;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	font-smoothing:antialiased;
+	transform-origin:50% 50%;
+}
+.demo__item {
+	width: #{$itemWidth}px;
+	height: #{$itemHeight}px;
+	opacity: 1;
+	// box-shadow: 0 0 1px 1px rgba(255,255,255,1.0);
+	float: left;
+	position: relative;
+	z-index: 1;
+	span {
+		display: block;
+		position: absolute;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+	}
+	span.front {
+		background-image:url(../images/demo.jpg);
+		background-repeat: no-repeat;	
+	}
+	span.back {
+		background-image:url(../images/demo2.jpg);
+		background-repeat: no-repeat;	
+
+	}
+}
+
+.demo__ctrl {
+	display: inline-block;
+	width: 100px;
+	height: 100px;
+	background:rgba(0,0,0,0.5);
+	position: relative;
+	top:0;
+	right: 0;
+	font-size: 2.5rem;
+	line-height: 100px;
+	vertical-align: middle;
+	text-align: center;	
+	z-index: 3;
+	color: #fff;
+	cursor: pointer;
+}
+
+.demo__img {
+	position: absolute;
+	top:0;
+	left: 0;
+}
+
+.demo__load {
+	position: fixed;
+	z-index: 10;
+	top:0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background:url(../images/ring.gif) rgba(0,0,0,1) no-repeat 50% 50%;
+	display: none;
+
+}
