@@ -37,7 +37,7 @@ $(document).ready(function() {
 $(document).ready(function() {
     var md = new MobileDetect(window.navigator.userAgent);
     var isMobile = md.phone() != null || md.tablet() != null  || window.innerWidth <= 640;
-    var isIE = true;
+    var isIE = false;
     //
     var martrix_length = [9,9];
 
