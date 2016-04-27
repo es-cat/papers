@@ -39,7 +39,7 @@ $(document).ready(function() {
     var isMobile = md.phone() != null || md.tablet() != null  || window.innerWidth <= 640;
     var isIE = true;
     //
-    var martrix_length = [10,9];
+    var martrix_length = [9,9];
 
     //viewport options
     var viewport_w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
@@ -51,7 +51,6 @@ $(document).ready(function() {
         '',
         '/images/bg-1.jpg',
         '/images/bg-2.jpg',
-
         '/images/bg-3.jpg',
         '/images/bg-4.jpg'
     ];
@@ -90,13 +89,19 @@ $(document).ready(function() {
     function calculateLayout(){
         if(isMobile){
             martrix_length = [5,5];
+            imgUrl = [
+                '',
+                '/images/bg-1.jpg',
+                '/images/bg-2.jpg',
+                '/images/bg-3.jpg',
+                '/images/bg-4.jpg'
+            ];
         }else {
-            martrix_length = [10,9];
             if(viewport_w > 1440){
                 imgUrl = [
+                    '',
                     '/images/bg-1.jpg',
                     '/images/bg-2.jpg',
-
                     '/images/bg-3.jpg',
                     '/images/bg-4.jpg'
                 ];
@@ -104,6 +109,7 @@ $(document).ready(function() {
                 img_h = 1080;
             } else if(viewport_w > 1280) {
                 imgUrl = [
+                    '',
                     '/images/bg-1.jpg',
                     '/images/bg-2.jpg',
                     '/images/bg-3.jpg',
@@ -113,6 +119,7 @@ $(document).ready(function() {
                 img_h = 1080;
             } else {
                 imgUrl = [
+                    '',
                     '/images/bg-1.jpg',
                     '/images/bg-2.jpg',
                     '/images/bg-3.jpg',
@@ -146,8 +153,8 @@ $(document).ready(function() {
 
         matrix.forEach(function(value, index, matrix) {
             var bgStyle = 'background-position:'+(index[1]*itemSize[0]*-1+imageCorpPos[0])+'px '+(index[0]*itemSize[1]*-1+imageCorpPos[1])+'px;';
-            var bgCurrentImg = 'background-image: url('+imgUrl[current]+');';
-            var bgNextImg = 'background-image: url('+ imgUrl[current+1]+');';
+            var bgCurrentImg = 'background-image: url('+imgUrl[0]+');';
+            var bgNextImg = 'background-image: url('+ imgUrl[1]+');';
             var wStyle = 'width:'+itemSize[0]+'px;';
             var hStyle = 'height:'+itemSize[1]+'px;';
             
@@ -158,7 +165,10 @@ $(document).ready(function() {
         });
 
         $('.demo__area').html(itemHtml);
-        TweenMax.set(".demo__area", {perspective:1000});
+        TweenMax.set(".demo__area", {
+            perspective:1000,
+            backgroundPosition: imageCorpPos[0]+'px '+ imageCorpPos[1]+'px'
+        });
         TweenMax.set(".demo__item", {transformStyle:"preserve-3d"});
         TweenMax.set(".demo__item .back", {rotationY:-180});
         TweenMax.set([".demo__item .back", ".demo__item .front"], {backfaceVisibility:"hidden"});
@@ -170,19 +180,22 @@ $(document).ready(function() {
         tl_switch.clear();
         var dNextFace = {};
         var tranOpacity = 1;
-
-        if(isFront){
-            dNextFace = $(".demo__item .back");
-        }else {
-            dNextFace = $(".demo__item .front");    
-        }
-
-        TweenMax.set(dNextFace, {backgroundImage:'url('+imgUrl[next]+')'});
         
         if(isIE){
-            TweenMax.set(".demo__item",{opacity:1});
+            TweenMax.set('.demo__item .front', {backgroundImage:'url('+imgUrl[current]+')'});
             TweenMax.set('.demo__area', {backgroundImage:'url('+imgUrl[next]+')'});
+            TweenMax.set(".demo__item",{
+                opacity:1,
+                rotationY: 0
+            });
             tranOpacity = 0;
+        } else {
+            if(isFront){
+                dNextFace = $(".demo__item .back");
+            }else {
+                dNextFace = $(".demo__item .front");    
+            }
+            TweenMax.set(dNextFace, {backgroundImage:'url('+imgUrl[next]+')'});
         }
 
         // console.log(dNextFace);
@@ -197,7 +210,7 @@ $(document).ready(function() {
             .add(TweenMax.to(dItem,2,{ 
                 transformOrigin:"50% 50%",
                 rotationY: '+='+180*3,
-                boxShadow: "0 0 1px 1px rgba(255,255,255,0.3)",
+                boxShadow: "0 0 0px 2px rgba(255,255,255,0.3)",
                 opacity: tranOpacity,
                 ease: Power2.easeInOut
             }),startTime)
@@ -221,7 +234,7 @@ $(document).ready(function() {
         resetSence();
         calculateLayout();
         generationSence();
-        goNext(current+1);
+        goNext(1);
     };
 
     function goNext(next){
