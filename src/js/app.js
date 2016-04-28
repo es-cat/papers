@@ -35,15 +35,18 @@ $(document).ready(function() {
 });
 
 $(document).ready(function() {
+    //判斷ie跟裝置
     var md = new MobileDetect(window.navigator.userAgent);
     var isMobile = md.phone() != null || md.tablet() != null  || window.innerWidth <= 640;
-    var isIE = false;
-    //
-    var martrix_length = [9,9];
+    var explorer = window.navigator.userAgent ; 
+    var isIE = explorer.indexOf("Trident/7.0") >= 0 || explorer.indexOf("MSIE") >= 0 ? true: false;
+    
+    //格數
+    var martrix_length = [10,10];
 
     //viewport options
-    var viewport_w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
-    var viewport_h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
+    var viewport_w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+    var viewport_h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
     console.log(viewport_w);
     console.log(viewport_h);
     //images options
@@ -56,9 +59,6 @@ $(document).ready(function() {
     ];
     var img_w = 1980;
     var img_h = 1200;
-
-    
-
 
     //tween options
     var delayUnit= 0.1;
@@ -79,14 +79,19 @@ $(document).ready(function() {
         }
     });
 
+    //layout相關參數
     var itemHtml = '';
     var $items = {};
     var imageCorpPos = [];
     var matrix = math.zeros(martrix_length[1], martrix_length[0]);
     var itemSize = [ Math.ceil(viewport_w/martrix_length[0]) , Math.ceil(viewport_h/martrix_length[1])];//寬高
-
+    //resize settimeout
+    var resizeSetTimeout = {};
 
     function calculateLayout(){
+        viewport_w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+        viewport_h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+        
         if(isMobile){
             martrix_length = [5,5];
             imgUrl = [
@@ -134,22 +139,34 @@ $(document).ready(function() {
         itemSize = [ Math.ceil(viewport_w/martrix_length[0]) , Math.ceil(viewport_h/martrix_length[1])];//寬高
     };
 
-    function loadSence(){
+    function loadOpen(){
+        TweenMax.set('.demo__load',{ 
+            opacity: 1,
+            zIndex:99
+        });
     };
 
+    function loadClose(){
+        TweenMax.to('.demo__load',0.5,{ 
+            opacity: 0,
+            zIndex:0
+        });
+    };
 
     function resetSence(){
         current = 0;
+        itemHtml ="";
         tl_switch.clear();
     };
 
 
     function generationSence(opts){
-        
         $('.demo__area').css({
             width: itemSize[0]*martrix_length[0]+'px',
             height: itemSize[1]*martrix_length[1]+'px'
         });
+
+
 
         matrix.forEach(function(value, index, matrix) {
             var bgStyle = 'background-position:'+(index[1]*itemSize[0]*-1+imageCorpPos[0])+'px '+(index[0]*itemSize[1]*-1+imageCorpPos[1])+'px;';
@@ -174,10 +191,12 @@ $(document).ready(function() {
         TweenMax.set([".demo__item .back", ".demo__item .front"], {backfaceVisibility:"hidden"});
 
 
+
     };
 
     function generationTl(next){
         tl_switch.clear();
+        
         var dNextFace = {};
         var tranOpacity = 1;
         
@@ -197,10 +216,6 @@ $(document).ready(function() {
             }
             TweenMax.set(dNextFace, {backgroundImage:'url('+imgUrl[next]+')'});
         }
-
-        // console.log(dNextFace);
-        // console.log(isFront);
-        // console.log(imgUrl[next]);
 
         $('.demo__item').each(function(idnex,item) {
             var dItem = $(item);
@@ -231,8 +246,8 @@ $(document).ready(function() {
     };
 
     function init(){
-        resetSence();
         calculateLayout();
+        resetSence();
         generationSence();
         goNext(1);
     };
@@ -241,6 +256,8 @@ $(document).ready(function() {
         generationTl(next);
         tl_switch.play();
     };
+
+
 
     init();
 
@@ -255,8 +272,13 @@ $(document).ready(function() {
     });
 
     $( window ).resize(function() {
-        tl_switch.clear();
-        init();
+        resetSence();
+        loadOpen();
+        clearTimeout(resizeSetTimeout);
+        resizeSetTimeout = setTimeout(function(){
+            init();
+            loadClose();
+        }, 300);   
     });
 
 
